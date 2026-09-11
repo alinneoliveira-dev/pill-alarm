@@ -35,19 +35,14 @@ def pending_reminders():
             m.dosage,
             ms.time
         FROM medication_schedules ms
-
         JOIN medications m
             ON m.id = ms.medication_id
-
         JOIN users u
             ON u.id = m.user_id
-
         WHERE ms.active = TRUE
           AND m.active = TRUE
-
           AND ms.time >= :current_time
           AND ms.time < :next_minute
-
           AND NOT EXISTS (
               SELECT 1
               FROM medication_logs ml

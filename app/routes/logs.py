@@ -39,3 +39,33 @@ def create_medication_log():
             "status": log.status
         }
     }, 201
+
+@logs_bp.route("/medication-logs/take-latest", methods=["POST"])
+def take_latest_medication():
+
+    log = MedicationLog.query.filter_by(
+        status="pending"
+    ).order_by(
+        MedicationLog.scheduled_at.desc()
+    ).first()
+
+    if not log:
+        return {
+            "message": "Nenhuma medicação pendente encontrada"
+        }, 404
+
+    log.status = "taken"
+    log.taken_at = datetime.now()
+
+    db.session.commit()
+
+    return {
+        "message": "medicação marcada como tomada",
+        "log": {
+            "id": log.id,
+            "medication_id": log.medication_id,
+            "scheduled_at": log.scheduled_at.isoformat(),
+            "taken_at": log.taken_at.isoformat(),
+            "status": log.status
+        }
+    }, 200
