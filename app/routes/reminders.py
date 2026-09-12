@@ -14,15 +14,13 @@ def pending_reminders():
 
     now = datetime.now()
 
-    current_time = now.time().replace(
+    current_minute = now.replace(
         second=0,
         microsecond=0
     )
 
-    next_minute = (
-        datetime.combine(now.date(), current_time)
-        + timedelta(minutes=1)
-    ).time()
+    window_start = current_minute - timedelta(minutes=2)
+    window_end = current_minute + timedelta(minutes=1)
 
     query = text("""
         SELECT
@@ -41,33 +39,40 @@ def pending_reminders():
             ON u.id = m.user_id
         WHERE ms.active = TRUE
           AND m.active = TRUE
-          AND ms.time >= :current_time
-          AND ms.time < :next_minute
+          AND (
+              ms.time >= CAST(:window_start AS TIME)
+              OR ms.time < CAST(:window_end AS TIME)
+          )
           AND NOT EXISTS (
               SELECT 1
               FROM medication_logs ml
               WHERE ml.medication_id = m.id
-                AND ml.scheduled_at = :scheduled_at
+                AND ml.scheduled_at >= :window_start
+                AND ml.scheduled_at < :window_end
           )
+        ORDER BY ms.time
     """)
-
-    scheduled_at = datetime.combine(
-        now.date(),
-        current_time
-    )
 
     result = db.session.execute(
         query,
         {
-            "current_time": current_time,
-            "next_minute": next_minute,
-            "scheduled_at": scheduled_at
+            "window_start": window_start,
+            "window_end": window_end
         }
     )
 
     reminders = []
 
     for row in result:
+
+        scheduled_at = datetime.combine(
+            current_minute.date(),
+            row.time
+        )
+
+        if scheduled_at > current_minute:
+            scheduled_at -= timedelta(days=1)
+
         reminders.append({
             "schedule_id": row.schedule_id,
             "user_id": row.user_id,
