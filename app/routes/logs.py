@@ -51,7 +51,7 @@ def take_latest_medication():
 
     if not log:
         return {
-            "message": "Nenhuma medicação pendente encontrada"
+            "message": "nenhuma medicação pendente encontrada"
         }, 404
 
     log.status = "taken"
@@ -66,6 +66,35 @@ def take_latest_medication():
             "medication_id": log.medication_id,
             "scheduled_at": log.scheduled_at.isoformat(),
             "taken_at": log.taken_at.isoformat(),
+            "status": log.status
+        }
+    }, 200
+
+@logs_bp.route("/medication-logs/skip-latest", methods=["POST"])
+def skip_latest_medication():
+
+    log = MedicationLog.query.filter_by(
+        status="pending"
+    ).order_by(
+        MedicationLog.scheduled_at.desc()
+    ).first()
+
+    if not log:
+        return {
+            "message": "Nenhuma medicação pendente encontrada"
+        }, 404
+
+    log.status = "skipped"
+
+    db.session.commit()
+
+    return {
+        "message": "medicação marcada como não tomada",
+        "log": {
+            "id": log.id,
+            "medication_id": log.medication_id,
+            "scheduled_at": log.scheduled_at.isoformat(),
+            "taken_at": None,
             "status": log.status
         }
     }, 200
