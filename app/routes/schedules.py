@@ -9,7 +9,10 @@ from app.models import MedicationSchedule, Medication
 schedules_bp = Blueprint("schedules", __name__)
 
 
-@schedules_bp.route("/schedules", methods=["POST"])
+@schedules_bp.route(
+    "/schedules",
+    methods=["POST"]
+)
 def create_schedule():
 
     data = request.get_json(silent=True)
@@ -25,18 +28,24 @@ def create_schedule():
         }, 400
 
     try:
-        medication_id = int(data["medication_id"])
+        medication_id = int(
+            data["medication_id"]
+        )
     except (TypeError, ValueError):
+
         return {
             "message": "medication_id deve ser um número inteiro"
         }, 400
 
     try:
+
         schedule_time = datetime.strptime(
             data["time"],
             "%H:%M:%S"
         ).time()
+
     except (TypeError, ValueError):
+
         return {
             "message": "time deve estar no formato HH:MM:SS"
         }, 400
@@ -47,6 +56,7 @@ def create_schedule():
     )
 
     if not medication:
+
         return {
             "message": "medicação não encontrada"
         }, 404
@@ -57,6 +67,7 @@ def create_schedule():
     )
 
     db.session.add(schedule)
+
     db.session.commit()
 
     return {
@@ -68,3 +79,60 @@ def create_schedule():
             "active": schedule.active
         }
     }, 201
+
+
+@schedules_bp.route(
+    "/schedules/<int:schedule_id>",
+    methods=["PUT"]
+)
+def update_schedule(schedule_id):
+
+    data = request.get_json(silent=True)
+
+    if not data:
+        return {
+            "message": "corpo da requisição inválido"
+        }, 400
+
+    if "time" not in data:
+        return {
+            "message": "time é obrigatório"
+        }, 400
+
+    try:
+
+        schedule_time = datetime.strptime(
+            data["time"],
+            "%H:%M:%S"
+        ).time()
+
+    except (TypeError, ValueError):
+
+        return {
+            "message": "time deve estar no formato HH:MM:SS"
+        }, 400
+
+    schedule = db.session.get(
+        MedicationSchedule,
+        schedule_id
+    )
+
+    if not schedule:
+
+        return {
+            "message": "horário não encontrado"
+        }, 404
+
+    schedule.time = schedule_time
+
+    db.session.commit()
+
+    return {
+        "message": "horário atualizado com sucesso",
+        "schedule": {
+            "id": schedule.id,
+            "medication_id": schedule.medication_id,
+            "time": schedule.time.strftime("%H:%M:%S"),
+            "active": schedule.active
+        }
+    }, 200

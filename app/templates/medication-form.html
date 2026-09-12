@@ -1,27 +1,62 @@
 {% extends "base.html" %}
 
-{% block title %}Nova medicação | Pill Alarm{% endblock %}
+{% block title %}
+    {% if edit_mode %}
+        Editar medicação | Pill Alarm
+    {% else %}
+        Nova medicação | Pill Alarm
+    {% endif %}
+{% endblock %}
 
 {% block content %}
 
 <section class="form-page container">
 
     <div class="form-header">
+
         <a href="/dashboard" class="back-link">
             ← Voltar
         </a>
 
-        <span class="eyebrow">NOVA MEDICAÇÃO</span>
+        <span class="eyebrow">
+            {% if edit_mode %}
+                EDITAR MEDICAÇÃO
+            {% else %}
+                NOVA MEDICAÇÃO
+            {% endif %}
+        </span>
 
-        <h1>Adicionar medicação</h1>
-        <p>Cadastre a medicação e defina quando ela deve ser tomada.</p>
+        <h1>
+            {% if edit_mode %}
+                Editar medicação
+            {% else %}
+                Adicionar medicação
+            {% endif %}
+        </h1>
+
+        <p>
+            {% if edit_mode %}
+                Atualize os dados e o horário da sua medicação.
+            {% else %}
+                Cadastre a medicação e defina quando ela deve ser tomada.
+            {% endif %}
+        </p>
+
     </div>
 
 
-    <form id="medication-form" class="medication-form">
+    <form
+        id="medication-form"
+        class="medication-form"
+        data-edit-mode="{{ 'true' if edit_mode else 'false' }}"
+        data-medication-id="{{ medication_id if medication_id else '' }}"
+    >
 
         <div class="form-group">
-            <label for="name">Nome da medicação</label>
+
+            <label for="name">
+                Nome da medicação
+            </label>
 
             <input
                 type="text"
@@ -30,11 +65,15 @@
                 placeholder="Ex.: Paracetamol"
                 required
             >
+
         </div>
 
 
         <div class="form-group">
-            <label for="dosage">Dosagem</label>
+
+            <label for="dosage">
+                Dosagem
+            </label>
 
             <input
                 type="text"
@@ -42,11 +81,15 @@
                 name="dosage"
                 placeholder="Ex.: 500mg"
             >
+
         </div>
 
 
         <div class="form-group">
-            <label for="instructions">Instruções</label>
+
+            <label for="instructions">
+                Instruções
+            </label>
 
             <textarea
                 id="instructions"
@@ -54,11 +97,15 @@
                 placeholder="Ex.: Após as refeições"
                 rows="4"
             ></textarea>
+
         </div>
 
 
         <div class="form-group">
-            <label for="time">Horário</label>
+
+            <label for="time">
+                Horário
+            </label>
 
             <input
                 type="time"
@@ -66,20 +113,35 @@
                 name="time"
                 required
             >
+
         </div>
 
 
-        <div id="form-message" class="form-message"></div>
+        <div
+            id="form-message"
+            class="form-message">
+        </div>
 
 
         <div class="form-actions">
 
-            <a href="/dashboard" class="cancel-button">
+            <a
+                href="/dashboard"
+                class="cancel-button">
                 Cancelar
             </a>
 
-            <button type="submit" class="save-button">
-                Salvar medicação
+            <button
+                type="submit"
+                class="save-button"
+                id="save-button">
+
+                {% if edit_mode %}
+                    Salvar alterações
+                {% else %}
+                    Salvar medicação
+                {% endif %}
+
             </button>
 
         </div>

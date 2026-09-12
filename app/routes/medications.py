@@ -101,11 +101,137 @@ def get_medications():
     }, 200
 
 
-@medications_bp.route("/medications/new", methods=["GET"])
+@medications_bp.route(
+    "/medications/<int:medication_id>",
+    methods=["GET"]
+)
+def get_medication(medication_id):
+
+    medication = db.session.get(
+        Medication,
+        medication_id
+    )
+
+    if not medication:
+        return {
+            "message": "medicação não encontrada"
+        }, 404
+
+    schedules = []
+
+    for schedule in medication.schedules:
+
+        if schedule.active:
+            schedules.append(
+                {
+                    "id": schedule.id,
+                    "time": schedule.time.strftime("%H:%M")
+                }
+            )
+
+    return {
+        "id": medication.id,
+        "user_id": medication.user_id,
+        "name": medication.name,
+        "dosage": medication.dosage,
+        "instructions": medication.instructions,
+        "active": medication.active,
+        "schedules": schedules
+    }, 200
+
+
+@medications_bp.route(
+    "/medications/<int:medication_id>",
+    methods=["PUT"]
+)
+def update_medication(medication_id):
+
+    medication = db.session.get(
+        Medication,
+        medication_id
+    )
+
+    if not medication:
+        return {
+            "message": "medicação não encontrada"
+        }, 404
+
+    data = request.get_json(silent=True)
+
+    if not data:
+        return {
+            "message": "corpo da requisição inválido"
+        }, 400
+
+    name = data.get("name")
+    dosage = data.get("dosage")
+    instructions = data.get("instructions")
+
+    if not isinstance(name, str) or not name.strip():
+        return {
+            "message": "name não pode estar vazio"
+        }, 400
+
+    medication.name = name.strip()
+
+    medication.dosage = (
+        dosage.strip()
+        if isinstance(dosage, str) and dosage.strip()
+        else None
+    )
+
+    medication.instructions = (
+        instructions.strip()
+        if isinstance(instructions, str) and instructions.strip()
+        else None
+    )
+
+    db.session.commit()
+
+    return {
+        "message": "medicação atualizada com sucesso",
+        "medication": {
+            "id": medication.id,
+            "user_id": medication.user_id,
+            "name": medication.name,
+            "dosage": medication.dosage,
+            "instructions": medication.instructions,
+            "active": medication.active
+        }
+    }, 200
+
+
+@medications_bp.route(
+    "/medications/new",
+    methods=["GET"]
+)
 def new_medication():
 
     return render_template(
         "medication-form.html"
+    )
+
+
+@medications_bp.route(
+    "/medications/<int:medication_id>/edit",
+    methods=["GET"]
+)
+def edit_medication(medication_id):
+
+    medication = db.session.get(
+        Medication,
+        medication_id
+    )
+
+    if not medication:
+        return {
+            "message": "medicação não encontrada"
+        }, 404
+
+    return render_template(
+        "medication-form.html",
+        medication_id=medication_id,
+        edit_mode=True
     )
 
 

@@ -4,11 +4,20 @@ console.log("Pill Alarm frontend carregado.");
 let medicationToDelete = null;
 
 
+/* =========================================================
+   CARREGAR MEDICAÇÕES
+========================================================= */
+
 async function loadMedications() {
 
-    const medicationsList = document.getElementById("medications-list");
-    const medicationCount = document.getElementById("medication-count");
-    const nextTime = document.getElementById("next-time");
+    const medicationsList =
+        document.getElementById("medications-list");
+
+    const medicationCount =
+        document.getElementById("medication-count");
+
+    const nextTime =
+        document.getElementById("next-time");
 
     if (!medicationsList) {
         return;
@@ -16,17 +25,23 @@ async function loadMedications() {
 
     try {
 
-        const response = await fetch("/medications");
+        const response =
+            await fetch("/medications");
 
         if (!response.ok) {
-            throw new Error("Erro ao buscar medicações.");
+            throw new Error(
+                "Erro ao buscar medicações."
+            );
         }
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
-        const medications = data.medications;
+        const medications =
+            data.medications;
 
-        medicationCount.textContent = medications.length;
+        medicationCount.textContent =
+            medications.length;
 
         medicationsList.innerHTML = "";
 
@@ -34,14 +49,20 @@ async function loadMedications() {
 
             medicationsList.innerHTML = `
                 <div class="empty-state">
-                    <h3>Nenhuma medicação cadastrada</h3>
+
+                    <h3>
+                        Nenhuma medicação cadastrada
+                    </h3>
+
                     <p>
                         Adicione uma medicação para começar sua rotina.
                     </p>
+
                 </div>
             `;
 
-            nextTime.textContent = "--:--";
+            nextTime.textContent =
+                "--:--";
 
             return;
         }
@@ -50,65 +71,113 @@ async function loadMedications() {
         let allTimes = [];
 
 
-        medications.forEach(medication => {
+        medications.forEach(
+            medication => {
 
-            const schedules = medication.schedules || [];
-
-
-            schedules.forEach(time => {
-                allTimes.push(time);
-            });
+                const schedules =
+                    medication.schedules || [];
 
 
-            const schedulesHTML = schedules.length > 0
-                ? schedules
-                    .map(time => `<strong>${time}</strong>`)
-                    .join(" · ")
-                : "<strong>Sem horário cadastrado</strong>";
+                schedules.forEach(
+                    time => {
+
+                        allTimes.push(time);
+
+                    }
+                );
 
 
-            const instructionsHTML = medication.instructions
-                ? `<strong>${medication.instructions}</strong>`
-                : "<strong>Sem instruções</strong>";
+                const schedulesHTML =
+                    schedules.length > 0
+
+                        ? schedules
+                            .map(
+                                time =>
+                                    `<strong>${time}</strong>`
+                            )
+                            .join(" · ")
+
+                        : "<strong>Sem horário cadastrado</strong>";
 
 
-            const card = document.createElement("article");
+                const instructionsHTML =
+                    medication.instructions
 
-            card.className = "medication-card";
+                        ? `<strong>${medication.instructions}</strong>`
+
+                        : "<strong>Sem instruções</strong>";
 
 
-            card.innerHTML = `
-                <div class="medication-header">
+                const card =
+                    document.createElement("article");
 
-                    <div class="medication-icon">
-                 <img src="/static/assets/icons8-pilula-40.png" alt="Ícone de medicação">
+                card.className =
+                    "medication-card";
+
+
+                card.innerHTML = `
+
+                    <div class="medication-header">
+
+                        <div class="medication-icon">
+
+                            <img
+                                src="/static/assets/icons8-pilula-40.png"
+                                alt="Ícone de medicação"
+                            >
+
+                        </div>
+
+
+                        <div class="medication-info">
+
+                            <h3>
+                                ${medication.name}
+                            </h3>
+
+                            <p>
+                                ${
+                                    medication.dosage ||
+                                    "Dosagem não informada"
+                                }
+                            </p>
+
+                        </div>
+
                     </div>
 
-                    <div class="medication-info">
 
-                        <h3>
-                            ${medication.name}
-                        </h3>
+                    <div class="medication-details">
 
-                        <p>
-                            ${medication.dosage || "Dosagem não informada"}
-                        </p>
-
-                    </div>
-                </div>
-
-
-                <div class="medication-details">
-
-                    <div class="detail">
-                        <div>
-
-                            <small>
-                                Horários
-                            </small>
+                        <div class="detail">
 
                             <div>
-                                ${schedulesHTML}
+
+                                <small>
+                                    Horários
+                                </small>
+
+                                <div>
+                                    ${schedulesHTML}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <span></span>
+
+                            <div>
+
+                                <small>
+                                    Instruções
+                                </small>
+
+                                ${instructionsHTML}
+
                             </div>
 
                         </div>
@@ -116,66 +185,49 @@ async function loadMedications() {
                     </div>
 
 
-                    <div class="detail">
+                    <div class="card-actions">
 
-                        <span>
-                        </span>
+                        <button
+                            type="button"
+                            class="secondary-button edit-button"
+                            data-id="${medication.id}">
 
-                        <div>
+                            Editar
 
-                            <small>
-                                Instruções
-                            </small>
+                        </button>
 
-                            ${instructionsHTML}
 
-                        </div>
+                        <button
+                            type="button"
+                            class="delete-button"
+                            data-id="${medication.id}"
+                            data-name="${medication.name}">
+
+                            Excluir
+
+                        </button>
 
                     </div>
-
-                </div>
-
-
-                <div class="card-actions">
-
-                    <button
-                        type="button"
-                        class="secondary-button edit-button"
-                        data-id="${medication.id}">
-
-                        Editar
-
-                    </button>
+                `;
 
 
-                    <button
-                        type="button"
-                        class="delete-button"
-                        data-id="${medication.id}"
-                        data-name="${medication.name}">
+                medicationsList.appendChild(card);
 
-                        Excluir
-
-                    </button>
-
-                </div>
-            `;
-
-
-            medicationsList.appendChild(card);
-
-        });
+            }
+        );
 
 
         if (allTimes.length > 0) {
 
             allTimes.sort();
 
-            nextTime.textContent = allTimes[0];
+            nextTime.textContent =
+                allTimes[0];
 
         } else {
 
-            nextTime.textContent = "--:--";
+            nextTime.textContent =
+                "--:--";
 
         }
 
@@ -184,7 +236,9 @@ async function loadMedications() {
         console.error(error);
 
         medicationsList.innerHTML = `
+
             <div class="empty-state">
+
                 <h3>
                     Não foi possível carregar as medicações
                 </h3>
@@ -192,229 +246,700 @@ async function loadMedications() {
                 <p>
                     Verifique se o servidor Flask está funcionando.
                 </p>
+
             </div>
+
         `;
     }
 }
 
 
+/* =========================================================
+   DATA ATUAL
+========================================================= */
+
 function updateCurrentDate() {
 
-    const currentDate = document.getElementById("current-date");
+    const currentDate =
+        document.getElementById(
+            "current-date"
+        );
 
     if (!currentDate) {
         return;
     }
 
-
-    const today = new Date();
-
+    const today =
+        new Date();
 
     const options = {
         day: "2-digit",
         month: "short"
     };
 
-
-    currentDate.textContent = today.toLocaleDateString(
-        "pt-BR",
-        options
-    );
+    currentDate.textContent =
+        today.toLocaleDateString(
+            "pt-BR",
+            options
+        );
 }
 
 
+/* =========================================================
+   BOTÃO ADICIONAR
+========================================================= */
+
 function setupAddButton() {
 
-    const addButton = document.querySelector(".add-button");
+    const addButton =
+        document.querySelector(
+            ".add-button"
+        );
 
     if (!addButton) {
         return;
     }
 
+    addButton.addEventListener(
+        "click",
+        () => {
 
-    addButton.addEventListener("click", () => {
+            window.location.href =
+                "/medications/new";
 
-        window.location.href = "/medications/new";
-
-    });
+        }
+    );
 }
 
 
+/* =========================================================
+   BOTÃO EDITAR
+========================================================= */
+
+function setupEditButtons() {
+
+    const medicationsList =
+        document.getElementById(
+            "medications-list"
+        );
+
+    if (!medicationsList) {
+        return;
+    }
+
+    medicationsList.addEventListener(
+        "click",
+        (event) => {
+
+            const editButton =
+                event.target.closest(
+                    ".edit-button"
+                );
+
+            if (!editButton) {
+                return;
+            }
+
+            const medicationId =
+                editButton.dataset.id;
+
+            window.location.href =
+                `/medications/${medicationId}/edit`;
+
+        }
+    );
+}
+
+
+/* =========================================================
+   CARREGAR DADOS DA MEDICAÇÃO PARA EDIÇÃO
+========================================================= */
+
+async function loadMedicationForEdit(
+    medicationId
+) {
+
+    try {
+
+        const response =
+            await fetch(
+                `/medications/${medicationId}`
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Não foi possível carregar a medicação."
+            );
+
+        }
+
+
+        document.getElementById(
+            "name"
+        ).value =
+            data.name || "";
+
+
+        document.getElementById(
+            "dosage"
+        ).value =
+            data.dosage || "";
+
+
+        document.getElementById(
+            "instructions"
+        ).value =
+            data.instructions || "";
+
+
+        /*
+         * O backend retorna os horários
+         * como objetos:
+         *
+         * [
+         *   {
+         *      id: 1,
+         *      time: "17:40"
+         *   }
+         * ]
+         *
+         * Pegamos o primeiro horário.
+         */
+
+        if (
+            data.schedules &&
+            data.schedules.length > 0
+        ) {
+
+            document.getElementById(
+                "time"
+            ).value =
+                data.schedules[0].time;
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        const message =
+            document.getElementById(
+                "form-message"
+            );
+
+        message.textContent =
+            error.message;
+
+        message.style.display =
+            "block";
+
+        message.style.background =
+            "#fef2f2";
+
+        message.style.color =
+            "#991b1b";
+
+    }
+}
+
+
+/* =========================================================
+   FORMULÁRIO DE MEDICAÇÃO
+========================================================= */
+
 function setupMedicationForm() {
 
-    const form = document.getElementById("medication-form");
+    const form =
+        document.getElementById(
+            "medication-form"
+        );
 
     if (!form) {
         return;
     }
 
 
-    form.addEventListener("submit", async (event) => {
-
-        event.preventDefault();
-
-
-        const name = document
-            .getElementById("name")
-            .value
-            .trim();
+    const editMode =
+        form.dataset.editMode === "true";
 
 
-        const dosage = document
-            .getElementById("dosage")
-            .value
-            .trim();
+    const medicationId =
+        form.dataset.medicationId;
 
 
-        const instructions = document
-            .getElementById("instructions")
-            .value
-            .trim();
+    /*
+     * Se estiver editando,
+     * busca os dados atuais no backend.
+     */
 
+    if (
+        editMode &&
+        medicationId
+    ) {
 
-        const time = document
-            .getElementById("time")
-            .value;
-
-
-        const message = document.getElementById(
-            "form-message"
+        loadMedicationForEdit(
+            medicationId
         );
 
-
-        if (!name) {
-
-            message.textContent =
-                "Informe o nome da medicação.";
-
-            message.style.display = "block";
-
-            return;
-        }
+    }
 
 
-        if (!time) {
+    form.addEventListener(
+        "submit",
+        async (event) => {
 
-            message.textContent =
-                "Informe o horário da medicação.";
-
-            message.style.display = "block";
-
-            return;
-        }
+            event.preventDefault();
 
 
-        try {
-
-            const medicationResponse = await fetch(
-                "/medications",
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        user_id: 1,
-                        name: name,
-                        dosage: dosage || null,
-                        instructions: instructions || null
-                    })
-                }
-            );
+            const name =
+                document
+                    .getElementById("name")
+                    .value
+                    .trim();
 
 
-            const medicationData =
-                await medicationResponse.json();
+            const dosage =
+                document
+                    .getElementById("dosage")
+                    .value
+                    .trim();
 
 
-            if (!medicationResponse.ok) {
+            const instructions =
+                document
+                    .getElementById("instructions")
+                    .value
+                    .trim();
 
-                throw new Error(
-                    medicationData.message ||
-                    "Não foi possível cadastrar a medicação."
+
+            const time =
+                document
+                    .getElementById("time")
+                    .value;
+
+
+            const message =
+                document.getElementById(
+                    "form-message"
                 );
 
+
+            const saveButton =
+                document.getElementById(
+                    "save-button"
+                );
+
+
+            if (!name) {
+
+                message.textContent =
+                    "Informe o nome da medicação.";
+
+                message.style.display =
+                    "block";
+
+                message.style.background =
+                    "#fef2f2";
+
+                message.style.color =
+                    "#991b1b";
+
+                return;
             }
 
 
-            const medicationId =
-                medicationData.medication.id;
+            if (!time) {
 
+                message.textContent =
+                    "Informe o horário da medicação.";
 
-            const scheduleResponse = await fetch(
-                "/schedules",
-                {
-                    method: "POST",
+                message.style.display =
+                    "block";
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                message.style.background =
+                    "#fef2f2";
 
-                    body: JSON.stringify({
-                        medication_id: medicationId,
-                        time: `${time}:00`
-                    })
-                }
-            );
+                message.style.color =
+                    "#991b1b";
 
-
-            const scheduleData =
-                await scheduleResponse.json();
-
-
-            if (!scheduleResponse.ok) {
-
-                throw new Error(
-                    scheduleData.message ||
-                    "A medicação foi criada, mas o horário não pôde ser salvo."
-                );
-
+                return;
             }
 
 
-            message.textContent =
-                "Medicação cadastrada com sucesso!";
-
-            message.style.display = "block";
-
-            message.style.background = "#ecfdf3";
-
-            message.style.color = "#166534";
+            saveButton.disabled =
+                true;
 
 
-            setTimeout(() => {
+            saveButton.textContent =
+                editMode
+                    ? "Salvando..."
+                    : "Cadastrando...";
 
-                window.location.href = "/dashboard";
 
-            }, 800);
+            try {
+
+                /*
+                 * ==========================================
+                 * MODO EDIÇÃO
+                 * ==========================================
+                 */
+
+                if (editMode) {
+
+                    const medicationResponse =
+                        await fetch(
+                            `/medications/${medicationId}`,
+                            {
+                                method: "PUT",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+
+                                    name: name,
+
+                                    dosage:
+                                        dosage || null,
+
+                                    instructions:
+                                        instructions || null
+
+                                })
+                            }
+                        );
 
 
-        } catch (error) {
+                    const medicationData =
+                        await medicationResponse.json();
 
-            console.error(error);
 
-            message.textContent =
-                error.message;
+                    if (!medicationResponse.ok) {
 
-            message.style.display = "block";
+                        throw new Error(
+                            medicationData.message ||
+                            "Não foi possível atualizar a medicação."
+                        );
 
-            message.style.background = "#fef2f2";
+                    }
 
-            message.style.color = "#991b1b";
+
+                    /*
+                     * Busca a medicação novamente
+                     * para descobrir o ID do horário.
+                     */
+
+                    const currentMedicationResponse =
+                        await fetch(
+                            `/medications/${medicationId}`
+                        );
+
+
+                    const currentMedication =
+                        await currentMedicationResponse.json();
+
+
+                    if (
+                        !currentMedicationResponse.ok
+                    ) {
+
+                        throw new Error(
+                            "Medicação atualizada, mas não foi possível carregar o horário."
+                        );
+
+                    }
+
+
+                    if (
+                        !currentMedication.schedules ||
+                        currentMedication.schedules.length === 0
+                    ) {
+
+                        /*
+                         * Caso não exista horário,
+                         * cria um novo.
+                         */
+
+                        const scheduleResponse =
+                            await fetch(
+                                "/schedules",
+                                {
+                                    method: "POST",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    body: JSON.stringify({
+
+                                        medication_id:
+                                            Number(medicationId),
+
+                                        time:
+                                            `${time}:00`
+
+                                    })
+                                }
+                            );
+
+
+                        const scheduleData =
+                            await scheduleResponse.json();
+
+
+                        if (!scheduleResponse.ok) {
+
+                            throw new Error(
+                                scheduleData.message ||
+                                "Medicação atualizada, mas o horário não pôde ser salvo."
+                            );
+
+                        }
+
+                    } else {
+
+                        /*
+                         * Atualiza o primeiro horário existente.
+                         */
+
+                        const scheduleId =
+                            currentMedication
+                                .schedules[0]
+                                .id;
+
+
+                        const scheduleResponse =
+                            await fetch(
+                                `/schedules/${scheduleId}`,
+                                {
+                                    method: "PUT",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    body: JSON.stringify({
+
+                                        time:
+                                            `${time}:00`
+
+                                    })
+                                }
+                            );
+
+
+                        const scheduleData =
+                            await scheduleResponse.json();
+
+
+                        if (!scheduleResponse.ok) {
+
+                            throw new Error(
+                                scheduleData.message ||
+                                "Medicação atualizada, mas o horário não pôde ser atualizado."
+                            );
+
+                            }
+
+                    }
+
+
+                    message.textContent =
+                        "Medicação atualizada com sucesso!";
+
+                    message.style.display =
+                        "block";
+
+                    message.style.background =
+                        "#ecfdf3";
+
+                    message.style.color =
+                        "#166534";
+
+
+                    setTimeout(
+                        () => {
+
+                            window.location.href =
+                                "/dashboard";
+
+                        },
+                        800
+                    );
+
+
+                    return;
+                }
+
+
+                /*
+                 * ==========================================
+                 * MODO CADASTRO
+                 * ==========================================
+                 */
+
+                const medicationResponse =
+                    await fetch(
+                        "/medications",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                user_id: 1,
+
+                                name: name,
+
+                                dosage:
+                                    dosage || null,
+
+                                instructions:
+                                    instructions || null
+
+                            })
+                        }
+                    );
+
+
+                const medicationData =
+                    await medicationResponse.json();
+
+
+                if (!medicationResponse.ok) {
+
+                    throw new Error(
+                        medicationData.message ||
+                        "Não foi possível cadastrar a medicação."
+                    );
+
+                }
+
+
+                const newMedicationId =
+                    medicationData.medication.id;
+
+
+                const scheduleResponse =
+                    await fetch(
+                        "/schedules",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                medication_id:
+                                    newMedicationId,
+
+                                time:
+                                    `${time}:00`
+
+                            })
+                        }
+                    );
+
+
+                const scheduleData =
+                    await scheduleResponse.json();
+
+
+                if (!scheduleResponse.ok) {
+
+                    throw new Error(
+                        scheduleData.message ||
+                        "A medicação foi criada, mas o horário não pôde ser salvo."
+                    );
+
+                }
+
+
+                message.textContent =
+                    "Medicação cadastrada com sucesso!";
+
+                message.style.display =
+                    "block";
+
+                message.style.background =
+                    "#ecfdf3";
+
+                message.style.color =
+                    "#166534";
+
+
+                setTimeout(
+                    () => {
+
+                        window.location.href =
+                            "/dashboard";
+
+                    },
+                    800
+                );
+
+            } catch (error) {
+
+                console.error(error);
+
+                message.textContent =
+                    error.message;
+
+                message.style.display =
+                    "block";
+
+                message.style.background =
+                    "#fef2f2";
+
+                message.style.color =
+                    "#991b1b";
+
+            } finally {
+
+                saveButton.disabled =
+                    false;
+
+                saveButton.textContent =
+                    editMode
+                        ? "Salvar alterações"
+                        : "Salvar medicação";
+
+            }
 
         }
-
-    });
-
+    );
 }
 
 
-function openDeleteModal(medicationId, medicationName) {
+/* =========================================================
+   MODAL DE EXCLUSÃO
+========================================================= */
+
+function openDeleteModal(
+    medicationId,
+    medicationName
+) {
 
     const modal =
-        document.getElementById("delete-modal");
+        document.getElementById(
+            "delete-modal"
+        );
 
     const medicationNameElement =
         document.getElementById(
@@ -422,41 +947,53 @@ function openDeleteModal(medicationId, medicationName) {
         );
 
 
-    medicationToDelete = medicationId;
+    medicationToDelete =
+        medicationId;
 
 
     medicationNameElement.textContent =
         medicationName;
 
 
-    modal.classList.add("active");
+    modal.classList.add(
+        "active"
+    );
+
 
     modal.setAttribute(
         "aria-hidden",
         "false"
     );
-
 }
 
 
 function closeDeleteModal() {
 
     const modal =
-        document.getElementById("delete-modal");
+        document.getElementById(
+            "delete-modal"
+        );
 
 
-    medicationToDelete = null;
+    medicationToDelete =
+        null;
 
 
-    modal.classList.remove("active");
+    modal.classList.remove(
+        "active"
+    );
+
 
     modal.setAttribute(
         "aria-hidden",
         "true"
     );
-
 }
 
+
+/* =========================================================
+   EXCLUIR MEDICAÇÃO
+========================================================= */
 
 async function deleteMedication() {
 
@@ -475,7 +1012,9 @@ async function deleteMedication() {
         );
 
 
-    confirmButton.disabled = true;
+    confirmButton.disabled =
+        true;
+
 
     confirmButton.textContent =
         "Excluindo...";
@@ -483,12 +1022,13 @@ async function deleteMedication() {
 
     try {
 
-        const response = await fetch(
-            `/medications/${medicationId}`,
-            {
-                method: "DELETE"
-            }
-        );
+        const response =
+            await fetch(
+                `/medications/${medicationId}`,
+                {
+                    method: "DELETE"
+                }
+            );
 
 
         const data =
@@ -523,15 +1063,19 @@ async function deleteMedication() {
 
     } finally {
 
-        confirmButton.disabled = false;
+        confirmButton.disabled =
+            false;
 
         confirmButton.textContent =
             "Excluir medicação";
 
     }
-
 }
 
+
+/* =========================================================
+   CONFIGURAR MODAL
+========================================================= */
 
 function setupDeleteModal() {
 
@@ -568,11 +1112,6 @@ function setupDeleteModal() {
         return;
     }
 
-
-    /*
-     * Usa event delegation porque os cards
-     * são criados dinamicamente pelo JavaScript.
-     */
 
     medicationsList.addEventListener(
         "click",
@@ -630,7 +1169,9 @@ function setupDeleteModal() {
         "click",
         (event) => {
 
-            if (event.target === modal) {
+            if (
+                event.target === modal
+            ) {
 
                 closeDeleteModal();
 
@@ -655,14 +1196,21 @@ function setupDeleteModal() {
 
         }
     );
-
 }
 
 
-function showErrorMessage(message) {
+/* =========================================================
+   MENSAGEM DE ERRO TEMPORÁRIA
+========================================================= */
+
+function showErrorMessage(
+    message
+) {
 
     const errorMessage =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     errorMessage.className =
@@ -678,14 +1226,20 @@ function showErrorMessage(message) {
     );
 
 
-    setTimeout(() => {
+    setTimeout(
+        () => {
 
-        errorMessage.remove();
+            errorMessage.remove();
 
-    }, 4000);
-
+        },
+        4000
+    );
 }
 
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -696,6 +1250,8 @@ document.addEventListener(
         loadMedications();
 
         setupAddButton();
+
+        setupEditButtons();
 
         setupMedicationForm();
 
