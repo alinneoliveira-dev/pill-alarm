@@ -64,3 +64,36 @@ def create_medication():
             "active": medication.active
         }
     }, 201
+
+@medications_bp.route("/medications", methods=["GET"])
+def get_medications():
+
+    medications = Medication.query.filter_by(
+        active=True
+    ).all()
+
+    result = []
+
+    for medication in medications:
+
+        schedules = []
+
+        for schedule in medication.schedules:
+            if schedule.active:
+                schedules.append(
+                    schedule.time.strftime("%H:%M")
+                )
+
+        result.append({
+            "id": medication.id,
+            "user_id": medication.user_id,
+            "name": medication.name,
+            "dosage": medication.dosage,
+            "instructions": medication.instructions,
+            "active": medication.active,
+            "schedules": schedules
+        })
+
+    return {
+        "medications": result
+    }, 200

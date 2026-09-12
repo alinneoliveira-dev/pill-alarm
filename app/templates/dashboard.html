@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Pill Alarm{% endblock %}
+
+{% block content %}
+
+<section class="dashboard container">
+
+    <div class="welcome">
+        <div>
+            <span class="eyebrow">MINHA ROTINA</span>
+            <h1>Olá, Alinne 👋</h1>
+            <p>Acompanhe suas medicações e horários.</p>
+        </div>
+
+        <div class="date-card">
+            <span>Hoje</span>
+            <strong>12 Set</strong>
+        </div>
+    </div>
+
+
+    <div class="summary">
+
+        <div class="summary-card">
+            <span class="summary-icon">💊</span>
+
+            <div>
+                <span class="summary-label">Medicações</span>
+                <strong>2</strong>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <span class="summary-icon">⏰</span>
+
+            <div>
+                <span class="summary-label">Próximo horário</span>
+                <strong>13:00</strong>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="section-header">
+        <div>
+            <span class="eyebrow">MEDICAÇÕES</span>
+            <h2>Minha rotina</h2>
+        </div>
+
+        <button class="add-button">
+            + Adicionar
+        </button>
+    </div>
+
+
+    <section class="medications-list">
+
+        <article class="medication-card">
+
+            <div class="medication-header">
+
+                <div class="medication-icon">
+                    💊
+                </div>
+
+                <div class="medication-info">
+                    <h3>Paracetamol</h3>
+                    <p>500mg</p>
+                </div>
+
+                <span class="active-badge">
+                    Ativo
+                </span>
+
+            </div>
+
+
+            <div class="medication-details">
+
+                <div class="detail">
+                    <span>⏰</span>
+                    <div>
+                        <small>Horários</small>
+                        <strong>08:00 · 13:00</strong>
+                    </div>
+                </div>
+
+                <div class="detail">
+                    <span>📝</span>
+                    <div>
+                        <small>Instruções</small>
+                        <strong>Após as refeições</strong>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="card-actions">
+                <button class="secondary-button">
+                    Editar
+                </button>
+
+                <button class="delete-button">
+                    Excluir
+                </button>
+            </div>
+
+        </article>
+
+
+        <article class="medication-card">
+
+            <div class="medication-header">
+
+                <div class="medication-icon vitamin">
+                    ☀️
+                </div>
+
+                <div class="medication-info">
+                    <h3>Vitamina D</h3>
+                    <p>1 cápsula</p>
+                </div>
+
+                <span class="active-badge">
+                    Ativo
+                </span>
+
+            </div>
+
+
+            <div class="medication-details">
+
+                <div class="detail">
+                    <span>⏰</span>
+                    <div>
+                        <small>Horários</small>
+                        <strong>13:00</strong>
+                    </div>
+                </div>
+
+                <div class="detail">
+                    <span>📝</span>
+                    <div>
+                        <small>Instruções</small>
+                        <strong>Durante o almoço</strong>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="card-actions">
+                <button class="secondary-button">
+                    Editar
+                </button>
+
+                <button class="delete-button">
+                    Excluir
+                </button>
+            </div>
+
+        </article>
+
+    </section>
+
+</section>
+
+{% endblock %}

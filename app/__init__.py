@@ -29,4 +29,7 @@ def create_app():
     from app.routes.logs import logs_bp
     app.register_blueprint(logs_bp)
 
+    from app.routes.dashboard import dashboard_bp
+    app.register_blueprint(dashboard_bp)
+
     return app
