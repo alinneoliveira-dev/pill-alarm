@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, render_template
 
 from app import db
 from app.models import Medication, User
@@ -65,6 +65,7 @@ def create_medication():
         }
     }, 201
 
+
 @medications_bp.route("/medications", methods=["GET"])
 def get_medications():
 
@@ -79,6 +80,7 @@ def get_medications():
         schedules = []
 
         for schedule in medication.schedules:
+
             if schedule.active:
                 schedules.append(
                     schedule.time.strftime("%H:%M")
@@ -96,4 +98,37 @@ def get_medications():
 
     return {
         "medications": result
+    }, 200
+
+
+@medications_bp.route("/medications/new", methods=["GET"])
+def new_medication():
+
+    return render_template(
+        "medication-form.html"
+    )
+
+
+@medications_bp.route(
+    "/medications/<int:medication_id>",
+    methods=["DELETE"]
+)
+def delete_medication(medication_id):
+
+    medication = db.session.get(
+        Medication,
+        medication_id
+    )
+
+    if not medication:
+
+        return {
+            "message": "medicação não encontrada"
+        }, 404
+
+    db.session.delete(medication)
+    db.session.commit()
+
+    return {
+        "message": "medicação excluída com sucesso"
     }, 200

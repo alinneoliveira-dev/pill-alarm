@@ -1,171 +1,119 @@
 {% extends "base.html" %}
-
 {% block title %}Dashboard | Pill Alarm{% endblock %}
-
 {% block content %}
-
 <section class="dashboard container">
-
     <div class="welcome">
         <div>
-            <span class="eyebrow">MINHA ROTINA</span>
-            <h1>Olá, Alinne 👋</h1>
-            <p>Acompanhe suas medicações e horários.</p>
+            <span class="eyebrow">
+                MINHA ROTINA
+            </span>
+            <p>
+                Acompanhe suas medicações e horários.
+            </p>
         </div>
-
         <div class="date-card">
-            <span>Hoje</span>
-            <strong>12 Set</strong>
+             <span>Hoje</span>
+            <strong id="current-date"></strong>
         </div>
     </div>
-
-
     <div class="summary">
-
         <div class="summary-card">
-            <span class="summary-icon">💊</span>
-
+            <span class="summary-icon">
+                <img src="{{ url_for('static', filename='assets/icons8-pilula-40.png') }}" alt="Ícone de medicação">
+            </span>
             <div>
-                <span class="summary-label">Medicações</span>
-                <strong>2</strong>
+                <span class="summary-label">
+                    Medicações
+                </span>
+                <strong id="medication-count">
+                    0
+                </strong>
             </div>
         </div>
 
         <div class="summary-card">
-            <span class="summary-icon">⏰</span>
-
+            <span class="summary-icon"> 
+                <img src="{{ url_for('static', filename='assets/icons8-alarme-40.png') }}" alt="alarme">
+            </span>
             <div>
-                <span class="summary-label">Próximo horário</span>
-                <strong>13:00</strong>
+                <span class="summary-label">
+                    Próximo horário
+                </span>
+                <strong id="next-time">
+                    --:--
+                </strong>
             </div>
         </div>
-
     </div>
-
-
     <div class="section-header">
         <div>
-            <span class="eyebrow">MEDICAÇÕES</span>
-            <h2>Minha rotina</h2>
+            <span class="eyebrow">
+                MEDICAÇÕES
+            </span>
         </div>
-
-        <button class="add-button">
+        <button
+            class="add-button"
+            type="button">
             + Adicionar
         </button>
     </div>
-
-
-    <section class="medications-list">
-
-        <article class="medication-card">
-
-            <div class="medication-header">
-
-                <div class="medication-icon">
-                    💊
-                </div>
-
-                <div class="medication-info">
-                    <h3>Paracetamol</h3>
-                    <p>500mg</p>
-                </div>
-
-                <span class="active-badge">
-                    Ativo
-                </span>
-
-            </div>
-
-
-            <div class="medication-details">
-
-                <div class="detail">
-                    <span>⏰</span>
-                    <div>
-                        <small>Horários</small>
-                        <strong>08:00 · 13:00</strong>
-                    </div>
-                </div>
-
-                <div class="detail">
-                    <span>📝</span>
-                    <div>
-                        <small>Instruções</small>
-                        <strong>Após as refeições</strong>
-                    </div>
-                </div>
-
-            </div>
-
-
-            <div class="card-actions">
-                <button class="secondary-button">
-                    Editar
-                </button>
-
-                <button class="delete-button">
-                    Excluir
-                </button>
-            </div>
-
-        </article>
-
-
-        <article class="medication-card">
-
-            <div class="medication-header">
-
-                <div class="medication-icon vitamin">
-                    ☀️
-                </div>
-
-                <div class="medication-info">
-                    <h3>Vitamina D</h3>
-                    <p>1 cápsula</p>
-                </div>
-
-                <span class="active-badge">
-                    Ativo
-                </span>
-
-            </div>
-
-
-            <div class="medication-details">
-
-                <div class="detail">
-                    <span>⏰</span>
-                    <div>
-                        <small>Horários</small>
-                        <strong>13:00</strong>
-                    </div>
-                </div>
-
-                <div class="detail">
-                    <span>📝</span>
-                    <div>
-                        <small>Instruções</small>
-                        <strong>Durante o almoço</strong>
-                    </div>
-                </div>
-
-            </div>
-
-
-            <div class="card-actions">
-                <button class="secondary-button">
-                    Editar
-                </button>
-
-                <button class="delete-button">
-                    Excluir
-                </button>
-            </div>
-
-        </article>
-
+    <section
+        class="medications-list"
+        id="medications-list">
+        <p>Carregando medicações... </p>
     </section>
-
 </section>
+
+<div
+    class="modal-overlay"
+    id="delete-modal"
+    aria-hidden="true">
+
+    <div
+        class="delete-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="delete-modal-title">
+
+        <div class="delete-modal-content">
+
+            <h2 id="delete-modal-title">
+                Excluir medicação?
+            </h2>
+            <p>
+                Você está prestes a excluir
+                <strong id="delete-medication-name">
+                    esta medicação
+                </strong>.
+            </p>
+
+            <p class="delete-modal-warning">
+                Essa ação também removerá os horários
+                e registros associados.
+            </p>
+
+        </div>
+
+        <div class="delete-modal-actions">
+
+            <button
+                type="button"
+                class="modal-cancel-button"
+                id="cancel-delete">
+                Cancelar
+            </button>
+
+            <button
+                type="button"
+                class="modal-delete-button"
+                id="confirm-delete">
+                Excluir medicação
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}

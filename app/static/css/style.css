@@ -19,9 +19,36 @@
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background: var(--background);
     color: var(--text);
     min-height: 100vh;
+
+    background-color: #f9f8f6;
+
+    background-image:
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(205, 215, 245, 0.6) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 90% 80%,
+            rgba(225, 205, 235, 0.5) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 10% 80%,
+            rgba(245, 235, 225, 0.5) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 20% 10%,
+            rgba(255, 255, 255, 0.9) 0%,
+            transparent 40%
+        );
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 button {
@@ -36,7 +63,6 @@ button {
 }
 
 
-/* TOPBAR */
 
 .topbar {
     background: var(--surface);
@@ -51,10 +77,20 @@ button {
 }
 
 .logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
     color: var(--text);
     text-decoration: none;
     font-size: 20px;
     font-weight: 700;
+}
+
+.logo-icon {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
 }
 
 .status {
@@ -63,16 +99,10 @@ button {
     font-weight: 600;
 }
 
-
-/* DASHBOARD */
-
 .dashboard {
     padding-top: 40px;
     padding-bottom: 60px;
 }
-
-
-/* WELCOME */
 
 .welcome {
     display: flex;
@@ -85,7 +115,7 @@ button {
 .eyebrow {
     display: block;
     color: var(--primary);
-    font-size: 11px;
+    font-size: 16px;
     font-weight: 700;
     letter-spacing: 1.5px;
     margin-bottom: 8px;
@@ -119,9 +149,6 @@ button {
 .date-card strong {
     font-size: 16px;
 }
-
-
-/* SUMMARY */
 
 .summary {
     display: grid;
@@ -168,8 +195,6 @@ button {
 }
 
 
-/* SECTION */
-
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -192,9 +217,6 @@ button {
 .add-button:hover {
     background: var(--primary-dark);
 }
-
-
-/* MEDICATION CARD */
 
 .medications-list {
     display: grid;
@@ -253,9 +275,6 @@ button {
     font-weight: 700;
 }
 
-
-/* DETAILS */
-
 .medication-details {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -291,8 +310,6 @@ button {
 }
 
 
-/* ACTIONS */
-
 .card-actions {
     display: flex;
     gap: 10px;
@@ -311,13 +328,309 @@ button {
     color: var(--text);
 }
 
+.secondary-button:hover {
+    background: #e2e8f0;
+}
+
 .delete-button {
     background: #fef2f2;
     color: var(--danger);
 }
 
+.delete-button:hover {
+    background: #fee2e2;
+}
 
-/* RESPONSIVE */
+
+.empty-state {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px 24px;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.empty-state h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+
+.form-page {
+    max-width: 650px;
+    padding-top: 40px;
+    padding-bottom: 60px;
+}
+
+.form-header {
+    margin-bottom: 30px;
+}
+
+.back-link {
+    display: inline-block;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+.back-link:hover {
+    color: var(--primary);
+}
+
+.form-header h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.form-header p {
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+
+.medication-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 26px;
+    box-shadow: var(--shadow);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font: inherit;
+    color: var(--text);
+    background: #fff;
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--primary);
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-message {
+    display: none;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.cancel-button,
+.save-button {
+    padding: 11px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.cancel-button {
+    background: #f1f5f9;
+    color: var(--text);
+}
+
+.cancel-button:hover {
+    background: #e2e8f0;
+}
+
+.save-button {
+    background: var(--primary);
+    color: white;
+}
+
+.save-button:hover {
+    background: var(--primary-dark);
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(15, 23, 42, 0.45);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity 0.2s ease,
+        visibility 0.2s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.delete-modal {
+    width: min(100%, 440px);
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 22px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 25px 60px rgba(15, 23, 42, 0.18);
+
+    transform: translateY(10px) scale(0.98);
+
+    transition: transform 0.2s ease;
+}
+
+.modal-overlay.active .delete-modal {
+    transform: translateY(0) scale(1);
+}
+
+.delete-modal-icon {
+    width: 54px;
+    height: 54px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 20px;
+
+    border-radius: 15px;
+
+    background: #fef2f2;
+
+    font-size: 23px;
+}
+
+.delete-modal-content h2 {
+    margin-bottom: 10px;
+
+    font-size: 22px;
+}
+
+.delete-modal-content p {
+    color: var(--muted);
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+.delete-modal-content strong {
+    color: var(--text);
+}
+
+.delete-modal-warning {
+    margin-top: 10px;
+
+    font-size: 13px !important;
+
+    color: var(--danger) !important;
+}
+
+.delete-modal-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 28px;
+}
+
+.modal-cancel-button,
+.modal-delete-button {
+    padding: 11px 16px;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+.modal-cancel-button {
+    background: #f1f5f9;
+
+    color: var(--text);
+}
+
+.modal-cancel-button:hover {
+    background: #e2e8f0;
+}
+
+.modal-delete-button {
+    background: var(--danger);
+
+    color: white;
+}
+
+.modal-delete-button:hover {
+    background: #b91c1c;
+}
+
+.temporary-error-message {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 2000;
+
+    max-width: 360px;
+
+    background: #fef2f2;
+    color: #991b1b;
+
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+
+    padding: 14px 18px;
+
+    font-size: 14px;
+
+    box-shadow: var(--shadow);
+}
 
 @media (max-width: 650px) {
 
@@ -366,4 +679,43 @@ button {
         display: none;
     }
 
+
+    /* FORM */
+
+    .form-page {
+        padding-top: 28px;
+    }
+
+    .form-header h1 {
+        font-size: 26px;
+    }
+
+    .medication-form {
+        padding: 20px;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .cancel-button,
+    .save-button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .delete-modal {
+        padding: 24px;
+    }
+
+    .delete-modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    .modal-cancel-button,
+    .modal-delete-button {
+        width: 100%;
+    }
+
 }
+
