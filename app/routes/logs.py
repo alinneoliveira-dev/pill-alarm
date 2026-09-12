@@ -81,7 +81,81 @@ def skip_latest_medication():
 
     if not log:
         return {
-            "message": "Nenhuma medicação pendente encontrada"
+            "message": "nenhuma medicação pendente encontrada"
+        }, 404
+
+    log.status = "skipped"
+
+    db.session.commit()
+
+    return {
+        "message": "medicação marcada como não tomada",
+        "log": {
+            "id": log.id,
+            "medication_id": log.medication_id,
+            "scheduled_at": log.scheduled_at.isoformat(),
+            "taken_at": None,
+            "status": log.status
+        }
+    }, 200
+
+@logs_bp.route("/medication-logs/take", methods=["POST"])
+def take_medication():
+
+    data = request.get_json()
+
+    medication_id = data["medication_id"]
+    scheduled_at = datetime.fromisoformat(
+        data["scheduled_at"]
+    )
+
+    log = MedicationLog.query.filter_by(
+        medication_id=medication_id,
+        scheduled_at=scheduled_at,
+        status="pending"
+    ).first()
+
+    if not log:
+        return {
+            "message": "log de medicação pendente não encontrado"
+        }, 404
+
+    log.status = "taken"
+    log.taken_at = datetime.now()
+
+    db.session.commit()
+
+    return {
+        "message": "medicação marcada como tomada",
+        "log": {
+            "id": log.id,
+            "medication_id": log.medication_id,
+            "scheduled_at": log.scheduled_at.isoformat(),
+            "taken_at": log.taken_at.isoformat(),
+            "status": log.status
+        }
+    }, 200
+
+
+@logs_bp.route("/medication-logs/skip", methods=["POST"])
+def skip_medication():
+
+    data = request.get_json()
+
+    medication_id = data["medication_id"]
+    scheduled_at = datetime.fromisoformat(
+        data["scheduled_at"]
+    )
+
+    log = MedicationLog.query.filter_by(
+        medication_id=medication_id,
+        scheduled_at=scheduled_at,
+        status="pending"
+    ).first()
+
+    if not log:
+        return {
+            "message": "log de medicação pendente não encontrado"
         }, 404
 
     log.status = "skipped"
